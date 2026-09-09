@@ -169,7 +169,7 @@ namespace techXpress.UI.Controllers
         [Authorize(Roles = UserRole.Customer)]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddReview(int id, ProductReviewVM reviewVM)
+        public async Task<IActionResult> AddReview(int id, CreateProductReviewActionRequest request)
         {
             string? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (!Guid.TryParse(userId, out Guid currentUserId))
@@ -179,15 +179,22 @@ namespace techXpress.UI.Controllers
 
             if (!ModelState.IsValid)
             {
-                TempData["errorNotification"] = "Please enter a rating between 1 and 5.";
+                TempData["errorNotification"] = request.Rating is < 1 or > 5
+                    ? "Please select a rating between 1 and 5."
+                    : "The review could not be submitted. Please check your comment and try again.";
                 return RedirectToAction("Details", "Home", new { id });
             }
 
-            reviewVM.UserId = currentUserId;
-            reviewVM.CreatedAt = DateTime.UtcNow;
+            ProductReviewDTO review = new ProductReviewDTO
+            {
+                Rating = request.Rating,
+                Comment = request.Comment?.Trim(),
+                UserId = currentUserId,
+                CreatedAt = DateTime.UtcNow
+            };
             try
             {
-                await _productManager.AddReviewAsync(id, reviewVM.ToDto());
+                await _productManager.AddReviewAsync(id, review);
                 TempData["successNotification"] = "Review added successfully";
             }
             catch (InvalidOperationException exception)
