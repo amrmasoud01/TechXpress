@@ -1,0 +1,31 @@
+﻿@model UpdateRoleActionRequest
+
+@{
+    ViewData["Title"] = "Update Role";
+}
+
+<a asp-action="Index" class="btn btn-secondary">Back to List</a>
+
+<h1>Update Role</h1>
+
+
+<form asp-action="Update" asp-controller="Role" method="post">
+
+    <input type="hidden" asp-for="Id" />
+
+    <div data-mdb-input-init class="form-outline mb-4">
+        <label asp-for="RoleName" class="form-label">Role Name</label>
+        <input asp-for="RoleName" class="form-control" />
+        <span asp-validation-for="RoleName" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary btn-block mb-4">Edit</button>
+
+</form>
+
+<div asp-validation-summary="All"></div>
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,123 @@
+﻿@{
+    ViewData["Title"] = "About Us";
+}
+
+<link rel="stylesheet" href="~/css/About.css" />
+
+
+<div class="container py-5">
+    <!-- Hero Section -->
+    <div class="about-hero">
+        <h1>Welcome to techXpress</h1>
+        <div class="underline"></div>
+        <p>Your one-stop destination for top-tier tech products, exceptional support, and a seamless online shopping experience.</p>
+    </div>
+
+    <!-- Features Section -->
+    <h2 class="text-center text-light mb-4">Why Choose Us</h2>
+    <div class="underline mx-auto mb-5"></div>
+    <div class="row g-4 mb-5">
+        <div class="col-md-6 col-lg-3">
+            <div class="feature-box">
+                <div class="feature-icon">
+                    <i class="bi bi-truck fs-3"></i>
+                </div>
+                <h4>Fast & Secure Delivery</h4>
+                <p>We ensure rapid, tracked shipping so your orders arrive safely and on time.</p>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <div class="feature-box">
+                <div class="feature-icon">
+                    <i class="bi bi-star fs-3"></i>
+                </div>
+                <h4>Curated Products</h4>
+                <p>We handpick only the best tech gadgets and tools from trusted brands worldwide.</p>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <div class="feature-box">
+                <div class="feature-icon">
+                    <i class="bi bi-shield-lock fs-3"></i>
+                </div>
+                <h4>Secure Shopping</h4>
+                <p>With our secure payment and data encryption, your privacy is always protected.</p>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <div class="feature-box">
+                <div class="feature-icon">
+                    <i class="bi bi-headset fs-3"></i>
+                </div>
+                <h4>24/7 Support</h4>
+                <p>Our team is here anytime to help with your orders or product questions.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Team Section -->
+    <div class="team-section">
+        <div class="team-heading">
+            <h2>Meet Our Team</h2>
+            <div class="underline mx-auto"></div>
+        </div>
+        <div class="row g-4 justify-content-center">
+            <div class="col-4 col-md-2 text-center">
+                <div class="team-simple">
+                    <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" class="team-link">
+                        <img src="/Images/test.jpg" alt="Amr" class="team-img">
+                        <h5 class="mt-3 text-light">Amr</h5>
+                    </a>
+                </div>
+            </div>
+            <div class="col-4 col-md-2 text-center">
+                <div class="team-simple">
+                    <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" class="team-link">
+                        <img src="/Images/test.jpg" alt="Omar" class="team-img">
+                        <h5 class="mt-3 text-light">Omar</h5>
+                    </a>
+                </div>
+            </div>
+            <div class="col-4 col-md-2 text-center">
+                <div class="team-simple">
+                    <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" class="team-link">
+                        <img src="/Images/mazen.JPG" alt="Mazen" class="team-img">
+                        <h5 class="mt-3 text-light">Mazen</h5>
+                    </a>
+                </div>
+            </div>
+            <div class="col-4 col-md-2 text-center">
+                <div class="team-simple">
+                    <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" class="team-link">
+                        <img src="/Images/test.jpg" alt="Ahmed" class="team-img">
+                        <h5 class="mt-3 text-light">Ahmed</h5>
+                    </a>
+                </div>
+            </div>
+            <div class="col-4 col-md-2 text-center">
+                <div class="team-simple">
+                    <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" class="team-link">
+                        <img src="/Images/test.jpg" alt="Shorouk" class="team-img">
+                        <h5 class="mt-3 text-light">Shorouk</h5>
+                    </a>
+                </div>
+            </div>
+            <div class="col-4 col-md-2 text-center">
+                <div class="team-simple">
+                    <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" class="team-link">
+                        <img src="/Images/test.jpg" alt="Asmaa" class="team-img">
+                        <h5 class="mt-3 text-light">Asmaa</h5>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CTA Section -->
+    <div class="cta-section">
+        <h2>Ready to explore our products?</h2>
+        <a asp-controller="Home" asp-action="Shop" class="btn btn-shop">
+            <i class="bi bi-bag-check-fill me-2"></i> Shop Now
+        </a>
+    </div>
+</div>

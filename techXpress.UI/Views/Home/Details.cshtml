@@ -1,0 +1,387 @@
+﻿@using System.Security.Claims
+@using techXpress.UI.VMs.Products
+@model ProductDetailsVM
+
+<link rel="stylesheet" href="~/css/theme.css" />
+<link rel="stylesheet" href="~/css/productDetails.css" />
+
+@{
+    var averageRating = Model.Reviews.Any() ? Model.Reviews.Average(r => r.Rating) : 0;
+    ViewData["Title"] = Model.Name;
+    var userId = User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+    
+    var ratingCounts = new int[5];
+    var totalReviews = Model.Reviews.Count();
+    
+    if (totalReviews > 0)
+    {
+        for (int i = 1; i <= 5; i++)
+        {
+            ratingCounts[i-1] = Model.Reviews.Count(r => r.Rating == i);
+        }
+    }
+}
+
+<!-- Product Showcase Section -->
+<section class="container py-5">
+    <div class="product-showcase">
+        <div class="row gy-4">
+            <!-- Product Image -->
+            <div class="col-lg-5">
+                <div class="product-image-wrapper">
+                    <div class="product-badges">
+                        <span class="product-badge badge-new">New</span>
+                        @if (Model.StockQuantity > 0)
+                        {
+                            <span class="product-badge badge-stock">In Stock</span>
+                        }
+                        else
+                        {
+                            <span class="product-badge badge-out">Out of Stock</span>
+                        }
+                    </div>
+                    <img src="/Images/@Model.ImageUrl" alt="@Model.Name" class="product-image" />
+                </div>
+            </div>
+            
+            <!-- Product Info -->
+            <div class="col-lg-7 product-info">
+                <h1 class="product-title">@Model.Name</h1>
+                
+                <!-- Rating -->
+                <div class="rating-wrapper">
+                    <div class="stars">
+                        @for (int i = 1; i <= 5; i++)
+                        {
+                            <i class="fas fa-star @(i <= averageRating ? "" : "text-secondary")"></i>
+                        }
+                    </div>
+                    <a href="#reviews" class="reviews-count">
+                        @if (totalReviews > 0)
+                        {
+                            <span>@totalReviews @(totalReviews == 1 ? "review" : "reviews")</span>
+                        }
+                        else
+                        {
+                            <span>No reviews yet</span>
+                        }
+                    </a>
+                </div>
+                
+                <!-- Price -->
+                <div class="price-wrapper">
+                    <div class="current-price">$@Model.Price.ToString("N2")</div>
+                </div>
+                
+                <!-- Description -->
+                <p class="product-description">@Model.Description</p>
+                
+                <!-- Specifications -->
+                <div class="product-specs">
+                    <div class="spec-item">
+                        <span class="spec-label">Category</span>
+                        <span class="spec-value">@Model.CategoryName</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">Availability</span>
+                        <span class="spec-value">
+                            @if (Model.StockQuantity > 0)
+                            {
+                                <span class="text-success">In Stock (@Model.StockQuantity items)</span>
+                            }
+                            else
+                            {
+                                <span class="text-danger">Out of Stock</span>
+                            }
+                        </span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">Shipping</span>
+                        <span class="spec-value">Free shipping</span>
+                    </div>
+                </div>
+                
+                <!-- Product Actions -->
+                <div class="product-actions">
+                    @if (!User.IsInRole(UserRole.Admin) && Model.StockQuantity > 0)
+                    {
+                        <a class="btn-primary-action"
+                           asp-action="Add"
+                           asp-controller="ShoppingCart"
+                           asp-route-id="@Model.Id">
+                            <i class="bi bi-cart-plus"></i>
+                            Add to Cart
+                        </a>
+                    }
+                    else if (Model.StockQuantity <= 0)
+                    {
+                        <button class="btn-primary-action" disabled>
+                            <i class="bi bi-exclamation-circle"></i>
+                            Out of Stock
+                        </button>
+                    }
+                    
+                    <a class="btn-secondary-action add-to-wishlist" data-product-id="@Model.Id" title="Add to Wishlist">
+                        <i class="bi bi-heart"></i>
+                    </a>
+                    
+                    <button class="btn-secondary-action" title="Compare">
+                        <i class="bi bi-arrow-left-right"></i>
+                    </button>
+                    
+                    <button class="btn-secondary-action" title="Share">
+                        <i class="bi bi-share"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Reviews Section -->
+<section id="reviews" class="container py-4">
+    <div class="reviews-container">
+        <div class="reviews-header">
+            <h2 class="reviews-title">Customer Reviews</h2>
+        </div>
+
+        <!-- Reviews Summary -->
+        <div class="reviews-summary">
+            <div class="rating-overview">
+                <div class="average-rating">@averageRating.ToString("0.0")</div>
+                <div class="rating-stars">
+                    @for (int i = 1; i <= 5; i++)
+                    {
+                        <i class="fas fa-star @(i <= averageRating ? "" : "text-secondary")"></i>
+                    }
+                </div>
+                <div class="rating-count">Based on @totalReviews @(totalReviews == 1 ? "review" : "reviews")</div>
+            </div>
+            
+            <div class="rating-bars">
+                @for (int i = 5; i >= 1; i--)
+                {
+                    var percent = totalReviews > 0 ? (ratingCounts[i-1] * 100) / totalReviews : 0;
+                    
+                    <div class="rating-bar">
+                        <span class="rating-label">@i Star@(i != 1 ? "s" : "")</span>
+                        <div class="rating-progress">
+                            <div class="rating-progress-fill" style="width: @percent%"></div>
+                        </div>
+                        <span class="rating-percent">@percent%</span>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Leave a Review Section -->
+        @if (User.Identity?.IsAuthenticated ?? false)
+        {
+            @if (Model.Reviews.Any(r => r.UserId.ToString() == userId))
+            {
+                <div class="alert-custom alert-custom-info">
+                    <i class="bi bi-info-circle-fill"></i>
+                    <div>
+                        <strong>Thank you for your review!</strong> You have already submitted a review for this product.
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="leave-review-section" id="reviewSection">
+                    <h3 class="leave-review-title">Write a Review</h3>
+                    <form asp-action="AddReview" asp-controller="Product" method="post" class="review-form">
+                        <input type="hidden" name="id" value="@Model.Id" />
+                        <div class="mb-3">
+                            <label class="form-label">Your Rating</label>
+                            <div class="rating-input" id="ratingStars">
+                                @for (int i = 1; i <= 5; i++)
+                                {
+                                    <i class="bi bi-star-fill star" data-value="@i"></i>
+                                }
+                            </div>
+                            <input type="hidden" name="Rating" id="RatingInput" required />
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="Comment" class="form-label">Your Review</label>
+                            <textarea class="form-control" id="Comment" name="Comment" rows="4" placeholder="Share your thoughts about this product..."></textarea>
+                        </div>
+
+                        <button type="submit" class="btn-primary-action">
+                            <i class="bi bi-send"></i>
+                            Submit Review
+                        </button>
+                    </form>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="alert-custom alert-custom-info">
+                <i class="bi bi-info-circle-fill"></i>
+                <div>
+                    Please <a href="/Account/Login?ReturnUrl=/Home/Details?id=@Model.Id" class="text-warning">sign in</a> to leave a review.
+                </div>
+            </div>
+        }
+
+        <!-- Reviews List -->
+        <div class="reviews-list mt-4">
+            <h3 class="mb-4 text-light">Customer Feedback</h3>
+            
+            @if (Model.Reviews != null && Model.Reviews.Any())
+            {
+                @foreach (var review in Model.Reviews)
+                {
+                    <div class="review-card">
+                        <div class="review-header">
+                            <div class="reviewer">
+                                <div class="reviewer-avatar">
+                                    @(review.UserName.Length > 0 ? review.UserName[0].ToString().ToUpper() : "?")
+                                </div>
+                                <div class="reviewer-info">
+                                    <span class="reviewer-name">@review.UserName</span>
+                                    <span class="review-date">@review.CreatedAt.ToString("MMMM dd, yyyy")</span>
+                                </div>
+                            </div>
+                            <div class="review-rating">
+                                @for (int i = 1; i <= 5; i++)
+                                {
+                                    <i class="fas fa-star @(i <= review.Rating ? "" : "text-secondary")"></i>
+                                }
+                            </div>
+                        </div>
+                        <div class="review-content">
+                            <p>@review.Comment</p>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="no-reviews-msg">
+                    <i class="bi bi-chat-square-text"></i>
+                    <p>No reviews yet. Be the first to share your experience with this product!</p>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+@section scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Star rating functionality
+            const stars = document.querySelectorAll("#ratingStars .star");
+            const ratingInput = document.getElementById("RatingInput");
+
+            stars.forEach(star => {
+                star.addEventListener("mouseover", function () {
+                    const value = parseInt(this.getAttribute("data-value"));
+                    stars.forEach((s, i) => {
+                        if (i < value) {
+                            s.classList.add("hovered");
+                        } else {
+                            s.classList.remove("hovered");
+                        }
+                    });
+                });
+
+                star.addEventListener("mouseout", function () {
+                    stars.forEach(s => s.classList.remove("hovered"));
+                });
+
+                star.addEventListener("click", function () {
+                    const value = parseInt(this.getAttribute("data-value"));
+                    ratingInput.value = value;
+                    
+                    stars.forEach((s, i) => {
+                        if (i < value) {
+                            s.classList.add("selected");
+                        } else {
+                            s.classList.remove("selected");
+                        }
+                    });
+                });
+            });
+            
+            // Smooth scroll to reviews section when clicking on review count link
+            document.querySelector('a[href="#reviews"]').addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelector('#reviews').scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+            
+            // Add to wishlist functionality
+            $('.add-to-wishlist').on('click', function(e) {
+                e.preventDefault();
+                const productId = $(this).data('product-id');
+                const heartIcon = $(this).find('i');
+                
+                $.ajax({
+                    url: '/Wishlist/Add',
+                    type: 'GET',
+                    data: { id: productId },
+                    success: function(response) {
+                        if (response.success) {
+                            // Change heart icon to filled
+                            heartIcon.removeClass('bi-heart').addClass('bi-heart-fill');
+                            
+                            // Show success notification
+                            Swal.fire({
+                                toast: true,
+                                position: 'top-end',
+                                icon: 'success',
+                                title: response.success,
+                                showConfirmButton: false,
+                                timer: 3000,
+                                timerProgressBar: true
+                            });
+                        } else if (response.info) {
+                            // Item already in wishlist
+                            heartIcon.removeClass('bi-heart').addClass('bi-heart-fill');
+                            
+                            // Show info notification
+                            Swal.fire({
+                                toast: true,
+                                position: 'top-end',
+                                icon: 'info',
+                                title: response.info,
+                                showConfirmButton: false,
+                                timer: 3000,
+                                timerProgressBar: true
+                            });
+                        } else if (response.error) {
+                            // Show error notification
+                            Swal.fire({
+                                toast: true,
+                                position: 'top-end',
+                                icon: 'error',
+                                title: response.error,
+                                showConfirmButton: false,
+                                timer: 3000,
+                                timerProgressBar: true
+                            });
+                        }
+                    },
+                    error: function() {
+                        // Show error notification
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: 'error',
+                            title: 'Failed to add item to wishlist',
+                            showConfirmButton: false,
+                            timer: 3000,
+                            timerProgressBar: true
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+
+    <partial name="_NotificationPartial" />
+}

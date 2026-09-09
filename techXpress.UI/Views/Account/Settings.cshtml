@@ -1,0 +1,86 @@
+﻿@model UserSettingsVM
+@{
+    ViewData["Title"] = "Settings";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <form asp-action="Settings" method="post">
+            <div class="card bg-dark text-light shadow mb-4">
+                <div class="card-header bg-secondary text-white">Update Info</div>
+                <div class="card-body">
+                    <input type="hidden" asp-for="UserId" />
+                    <div class="mb-3">
+                        <label asp-for="UserName" class="form-label"></label>
+                        <input asp-for="UserName" class="form-control" />
+                        <span asp-validation-for="UserName" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Email" class="form-label"></label>
+                        <input asp-for="Email" class="form-control" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="PhoneNumber" class="form-label"></label>
+                        <input asp-for="PhoneNumber" class="form-control" />
+                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                    </div>
+                    <button type="submit" class="btn btn-outline-light">Save Changes</button>
+                
+                </div>
+            </div>
+
+            <div class="card bg-dark text-light shadow">
+                <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
+                    <span>Change Password</span>
+                    <button id="togglePasswordForm" type="button" class="btn btn-sm btn-outline-light">Reset Password</button>
+                </div>
+                <div class="card-body" id="passwordForm" style="display: none;">
+
+                    <input type="hidden" asp-for="UserId" />
+                    <div class="mb-3">
+                        <label asp-for="CurrentPassword" class="form-label"></label>
+                        <input asp-for="CurrentPassword" class="form-control" />
+                        <span asp-validation-for="CurrentPassword" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="NewPassword" class="form-label"></label>
+                        <input asp-for="NewPassword" class="form-control" />
+                        <span asp-validation-for="NewPassword" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="ConfirmNewPassword" class="form-label"></label>
+                        <input asp-for="ConfirmNewPassword" class="form-control" />
+                        <span asp-validation-for="ConfirmNewPassword" class="text-danger"></span>
+                    </div>
+                    
+                </div>
+            </div>
+        </form>
+
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        const toggleBtn = document.getElementById("togglePasswordForm");
+        const passwordForm = document.getElementById("passwordForm");
+
+        toggleBtn.addEventListener("click", function () {
+            const isHidden = passwordForm.style.display === "none" || passwordForm.style.display === "";
+
+            if (isHidden) {
+                passwordForm.style.display = "block";
+                toggleBtn.textContent = "Cancel";
+            } else {
+                passwordForm.style.display = "none";
+                toggleBtn.textContent = "Reset Password";
+
+                passwordForm.querySelectorAll("input").forEach(input => {
+                    if (input.type === "password") input.value = "";
+                });
+            }
+        });
+    </script>
+}

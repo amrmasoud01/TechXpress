@@ -1,0 +1,126 @@
+@using techXpress.UI.VMs.User
+@model IEnumerable<UserVM>
+@{
+    ViewData["Title"] = "User Management";
+}
+<div class="container py-4">
+    <div class="card shadow-sm rounded-3">
+        <div class="card-header bg-primary text-white py-3 d-flex justify-content-between align-items-center">
+            <h4 class="mb-0 fw-bold">User Management</h4>
+            <div>
+                <a asp-action="Create" asp-controller="User" class="btn btn-light me-2 mb-2 mb-md-0">
+                    <i class="bi bi-plus-circle"></i> Create New User
+                </a>
+                <a asp-action="Index" asp-controller="Home" class="btn btn-outline-light">
+                    <i class="bi bi-house"></i> Back To Home
+                </a>
+            </div>
+        </div>
+        <div class="card-body p-4">
+            <partial name="_NotificationPartial" />
+
+            <div class="table-responsive">
+                <table id="usersTable" class="table table-hover display">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Phone Number</th>
+                            <th>Roles</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var user in Model)
+                        {
+                            <tr>
+                                <td>@user.UserName</td>
+                                <td>@user.Email</td>
+                                <td>@user.PhoneNumber</td>
+                                <td>@user.Roles</td>
+                                <td class="text-end">
+                                    <div class="d-flex justify-content-end gap-2">
+                                        <a asp-action="UpdateRole" asp-controller="User" asp-route-id="@user.Id" class="btn btn-primary btn-sm">
+                                            <i class="bi bi-pencil"></i> Update Role
+                                        </a>
+                                        <a onclick="deleteUser('api/user/delete/@user.Id')" class="btn btn-danger btn-sm">
+                                            <i class="bi bi-trash"></i> Delete
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css" />
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#usersTable').DataTable({
+                responsive: true,
+                lengthMenu: [10, 25, 50, 100],
+                pageLength: 10,
+                language: {
+                    lengthMenu: "Show _MENU_ users per page",
+                    zeroRecords: "No users found",
+                    info: "Showing page _PAGE_ of _PAGES_",
+                    infoEmpty: "No users available",
+                    infoFiltered: "(filtered from _MAX_ total users)"
+                }
+            });
+        });
+
+        async function deleteUser(url) {
+            Swal.fire({
+                title: "Are you sure?",
+                text: "You won't be able to revert this!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, delete it!"
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    try {
+                        const response = await fetch(url, {
+                            method: 'DELETE',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        });
+
+                        const data = await response.json();
+
+                        if (response.ok) {
+                            if (data.success) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Success',
+                                    text: data.message
+                                }).then(() => {
+                                    window.location.reload();
+                                });
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: data.message
+                                });
+                            }
+                        } else {
+                            throw new Error('Something went wrong');
+                        }
+                    } catch (error) {
+                        console.log(error);
+                    }
+                }
+            });
+        }
+    </script>
+} 

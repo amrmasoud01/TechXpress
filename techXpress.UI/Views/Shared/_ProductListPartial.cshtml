@@ -1,0 +1,241 @@
+@using techXpress.UI.VMs.Products
+@model PagedProductListVM
+<link href="~/css/productCard.css" rel="stylesheet" />
+
+<style>
+    .bi-star-half,
+    .bi-star-fill,
+    .bi-star {
+        color: gold;
+    }
+    .text-secondary {
+        color: #6c757d !important;
+    }
+</style>
+
+<div class="row g-4">
+    @if (Model.Products.Any())
+    {
+        foreach (var product in Model.Products)
+        {
+            <div class="col-sm-6 col-md-4 col-xl-3 mb-4">
+                <div class="card h-100 product-card shadow-sm border-0 rounded-3">
+                    <div class="position-relative product-img-wrapper">
+                        <span class="position-absolute top-0 start-0 m-3 badge bg-dark">New</span>
+                        <div class="p-3 text-center">
+                            <img src="/Images/@product.Image" style="height: 180px; object-fit: contain;" class="card-img-top" alt="@product.Name" />
+                        </div>
+                        <a class="heart-btn add-to-wishlist" data-product-id="@product.Id">
+                            <i class="bi bi-heart"></i>
+                        </a>
+                    </div>
+                    <div class="card-body pt-0 text-center d-flex flex-column">
+                        <h5 class="card-title mb-2 flex-grow-1">@product.Name</h5>
+                        <div class="mb-3">
+                            <span class="badge bg-light text-dark me-2">Electronics</span>
+                            @if (product.StockQuantity > 0)
+                            {
+                                <span class="badge bg-success">In Stock</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger">Out of Stock</span>
+                            }
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div class="product-rating">
+                                @{
+                                    // Convert rating to stars
+                                    int fullStars = (int)Math.Floor(product.AverageRating);
+                                    bool hasHalfStar = product.AverageRating - fullStars >= 0.5;
+                                    int emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+                                }
+
+                                @for (int i = 0; i < fullStars; i++)
+                                {
+                                    <i class="bi bi-star-fill"></i>
+                                }
+
+                                @if (hasHalfStar)
+                                {
+                                    <i class="bi bi-star-half"></i>
+                                }
+
+                                @for (int i = 0; i < emptyStars; i++)
+                                {
+                                    <i class="bi bi-star"></i>
+                                }
+
+                                @if (product.AverageRating > 0)
+                                {
+                                    <span class="ms-1 small text-secondary">(@product.AverageRating.ToString("0.0"))</span>
+                                }
+                                else
+                                {
+                                    <span class="ms-1 small text-secondary">(No ratings)</span>
+                                }
+                            </div>
+                            <div class="product-price fw-bold">$@product.Price.ToString("F2")</div>
+                        </div>
+                        <a class="btn btn-view-details w-100" asp-action="Details" asp-controller="Home" asp-route-id="@product.Id">
+                            <i class="bi bi-eye me-1"></i> View Details
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="col-12">
+            <div class="alert alert-info text-center">
+                <i class="bi bi-info-circle-fill me-2"></i>
+                No products found matching your criteria. Try adjusting your filters.
+            </div>
+        </div>
+    }
+</div>
+
+@{
+    var totalPages = (int)Math.Ceiling((double)Model.TotalCount / Model.PageSize);
+    var startItem = Model.TotalCount == 0 ? 0 : ((Model.PageNo - 1) * Model.PageSize) + 1;
+    var endItem = Math.Min(Model.TotalCount, Model.PageNo * Model.PageSize);
+}
+
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-center mt-4">
+    <div class="product-counter mb-3 mb-md-0">
+        @if (Model.TotalCount > 0)
+        {
+            <span>Showing <strong>@startItem-@endItem</strong> of <strong>@Model.TotalCount</strong> products</span>
+        }
+        else
+        {
+            <span>No products found</span>
+        }
+    </div>
+
+    @if (totalPages > 1)
+    {
+        <nav aria-label="Product pagination">
+            <ul class="pagination mb-0">
+                <!-- First Page -->
+                <li class="page-item @(Model.PageNo == 1 ? "disabled" : "")">
+                    <button class="page-link" data-page="1" aria-label="First Page">
+                        <i class="bi bi-chevron-double-left"></i>
+                    </button>
+                </li>
+
+                <!-- Previous Page -->
+                <li class="page-item @(Model.PageNo == 1 ? "disabled" : "")">
+                    <button class="page-link" data-page="@(Model.PageNo - 1)" aria-label="Previous Page">
+                        <i class="bi bi-chevron-left"></i>
+                    </button>
+                </li>
+                
+                <!-- Pages -->
+                @{
+                    int pageStart = Math.Max(1, Model.PageNo - 2);
+                    int pageEnd = Math.Min(totalPages, pageStart + 4);
+                    
+                    if (pageEnd - pageStart < 4 && totalPages > 4)
+                    {
+                        pageStart = Math.Max(1, pageEnd - 4);
+                    }
+                }
+                
+                @for (int i = pageStart; i <= pageEnd; i++)
+                {
+                    <li class="page-item @(Model.PageNo == i ? "active" : "")">
+                        <button class="page-link" data-page="@i">@i</button>
+                    </li>
+                }
+
+                <!-- Next Page -->
+                <li class="page-item @(Model.PageNo == totalPages ? "disabled" : "")">
+                    <button class="page-link" data-page="@(Model.PageNo + 1)" aria-label="Next Page">
+                        <i class="bi bi-chevron-right"></i>
+                    </button>
+                </li>
+
+                <!-- Last Page -->
+                <li class="page-item @(Model.PageNo == totalPages ? "disabled" : "")">
+                    <button class="page-link" data-page="@totalPages" aria-label="Last Page">
+                        <i class="bi bi-chevron-double-right"></i>
+                    </button>
+                </li>
+            </ul>
+        </nav>
+    }
+</div>
+
+<script>
+    // Heart button click event
+    $(document).on('click', '.heart-btn', function(e) {
+        e.preventDefault();
+        const $this = $(this);
+        const productId = $this.data('product-id');
+        const icon = $this.find('i');
+        
+        $.ajax({
+            url: '/Wishlist/Add',
+            type: 'GET',
+            data: { id: productId },
+            success: function(response) {
+                if (response.success) {
+                    // Change heart icon to filled
+                    icon.removeClass('bi-heart').addClass('bi-heart-fill');
+                    $this.addClass('liked');
+                    
+                    // Show success notification
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'success',
+                        title: response.success,
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true
+                    });
+                } else if (response.info) {
+                    // Item already in wishlist
+                    icon.removeClass('bi-heart').addClass('bi-heart-fill');
+                    $this.addClass('liked');
+                    
+                    // Show info notification
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'info',
+                        title: response.info,
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true
+                    });
+                } else if (response.error) {
+                    // Show error notification
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'error',
+                        title: response.error,
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true
+                    });
+                }
+            },
+            error: function() {
+                // Show error notification
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'error',
+                    title: 'Failed to add item to wishlist',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true
+                });
+            }
+        });
+    });
+</script>

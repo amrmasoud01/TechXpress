@@ -1,0 +1,200 @@
+﻿@using techXpress.UI.VMs.Category
+@model IEnumerable<CategoryWithProductsVM>
+
+@{
+    ViewData["Title"] = "Home";
+}
+
+<link rel="stylesheet" href="~/css/index.css" />
+
+<div class="w-100 px-4 py-4">
+    @foreach (var category in Model)
+    {
+        <div class="category-section">
+            <div class="category-header w-100 text-center p-4 mb-4">
+                <h2 class="text-uppercase fw-bold mb-2">@category.CategoryName</h2>
+                <p class="mb-3">Explore our exclusive selection in <strong>@category.CategoryName</strong></p>
+                <a href="/Home/Shop?categoryId=@category.CategoryId" class="shop-category-btn">
+                    Shop All @category.CategoryName <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+
+            <div class="product-grid-wrapper border-2 border rounded-4 p-4 bg-dark w-100">
+                <div class="row g-4">
+                    @foreach (var product in category.Products)
+                    {
+                        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                            <div class="product-card h-100 shadow">
+                                @if (new Random().Next(0, 2) == 0)
+                                {
+                                    <span class="product-badge badge-new">New</span>
+                                }
+                                else
+                                {
+                                    <span class="product-badge badge-sale">Sale</span>
+                                }
+                                
+                                <div class="product-img-container">
+                                    <img src="/Images/@product.Image" class="img-fluid" alt="@product.Name">
+                                    <div class="product-actions">
+                                        <button class="action-btn" title="Compare">
+                                            <i class="bi bi-arrow-left-right"></i>
+                                        </button>
+                                        <a class="action-btn add-to-wishlist" title="Add to Wishlist" data-product-id="@product.Id">
+                                            <i class="bi bi-heart"></i>
+                                        </a>
+
+                                        <a class="action-btn" title="Add to Cart" asp-action="Add" asp-controller="ShoppingCart" asp-route-id="@product.Id">
+                                            <i class="bi bi-cart"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                                
+                                <div class="product-info">
+                                    <h5 class="product-title">@product.Name</h5>
+                                    <div class="product-rating">
+                                        @{
+                                            // Convert rating to stars
+                                            int fullStars = (int)Math.Floor(product.AverageRating);
+                                            bool hasHalfStar = product.AverageRating - fullStars >= 0.5;
+                                            int emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+                                        }
+                                        
+                                        @for (int i = 0; i < fullStars; i++)
+                                        {
+                                            <i class="bi bi-star-fill"></i>
+                                        }
+                                        
+                                        @if (hasHalfStar)
+                                        {
+                                            <i class="bi bi-star-half"></i>
+                                        }
+                                        
+                                        @for (int i = 0; i < emptyStars; i++)
+                                        {
+                                            <i class="bi bi-star text-secondary"></i>
+                                        }
+                                        
+                                        @if (product.AverageRating > 0)
+                                        {
+                                            <span class="ms-1 small text-secondary">(@product.AverageRating.ToString("0.0"))</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="ms-1 small text-secondary">(No ratings)</span>
+                                        }
+                                    </div>
+                                    <div class="product-price">$@product.Price.ToString("F2")</div>
+                                    <a asp-action="Details" asp-controller="Home" asp-route-id="@product.Id" class="view-btn">
+                                        <i class="bi bi-eye"></i> View Details
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<!-- Contact Us Section -->
+<section class="contact-us-section py-5 px-4 bg-light mt-5 rounded-3 shadow-sm">
+    <div class="text-center mb-4">
+        <h2 class="fw-bold text-dark">Contact Us</h2>
+        <div class="underline mx-auto mb-2"></div>
+        <p class="text-muted">Feel free to reach out with any questions or feedback — we're here to help!</p>
+    </div>
+
+    <form class="contact-form mx-auto" style="max-width: 600px;">
+        <div class="mb-3">
+            <label for="email" class="form-label fw-bold text-dark">Email</label>
+            <input type="email" class="form-control" id="email" placeholder="Your Email">
+        </div>
+        <div class="mb-3">
+            <label for="message" class="form-label fw-bold text-dark">Message</label>
+            <textarea class="form-control" id="message" rows="5" placeholder="Your Message"></textarea>
+        </div>
+        <button type="submit" class="btn btn-dark px-4 py-2">Send Message <i class="bi bi-paper-plane ms-2"></i></button>
+    </form>
+</section>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Add to wishlist functionality
+            $('.add-to-wishlist').on('click', function(e) {
+                e.preventDefault();
+                const productId = $(this).data('product-id');
+                const heartIcon = $(this).find('i');
+                
+                $.ajax({
+                    url: '/Wishlist/Add',
+                    type: 'GET',
+                    data: { id: productId },
+                    success: function(response) {
+                        if (response.success) {
+                            // Change heart icon to filled
+                            heartIcon.removeClass('bi-heart').addClass('bi-heart-fill');
+                            
+                            // Show success notification
+                            Swal.fire({
+                                toast: true,
+                                position: 'top-end',
+                                icon: 'success',
+                                title: response.success,
+                                showConfirmButton: false,
+                                timer: 3000,
+                                timerProgressBar: true,
+                                didOpen: (toast) => {
+                                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                }
+                            });
+                        } else if (response.info) {
+                            // Item already in wishlist
+                            heartIcon.removeClass('bi-heart').addClass('bi-heart-fill');
+                            
+                            // Show info notification
+                            Swal.fire({
+                                toast: true,
+                                position: 'top-end',
+                                icon: 'info',
+                                title: response.info,
+                                showConfirmButton: false,
+                                timer: 3000,
+                                timerProgressBar: true
+                            });
+                        } else if (response.error) {
+                            // Show error notification
+                            Swal.fire({
+                                toast: true,
+                                position: 'top-end',
+                                icon: 'error',
+                                title: response.error,
+                                showConfirmButton: false,
+                                timer: 3000,
+                                timerProgressBar: true
+                            });
+                        }
+                    },
+                    error: function() {
+                        // Show error notification
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: 'error',
+                            title: 'Failed to add item to wishlist',
+                            showConfirmButton: false,
+                            timer: 3000,
+                            timerProgressBar: true
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+}
+
+
+

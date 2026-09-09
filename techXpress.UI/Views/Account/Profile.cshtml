@@ -1,0 +1,74 @@
+﻿@using techXpress.UI.VMs.Account
+@model UserProfileVM
+@{
+    ViewData["Title"] = Model.UserName;
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card bg-dark text-light mb-4 shadow">
+            <div class="card-header bg-secondary text-white">
+                <h5 class="mb-0">User Information</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Username:</strong> @Model.UserName</p>
+                <p><strong>Email:</strong> @Model.Email</p>
+                <p><strong>Phone Number:</strong> @Model.PhoneNumber</p>
+            </div>
+            <div class="text-end me-2 mb-3">
+            <a asp-action="Settings" asp-controller="Account" class="btn btn-outline-light">
+                    <i class="bi bi-gear-fill"></i> Edit Profile
+                </a>
+            </div>
+
+        </div>
+
+        <div class="card bg-dark text-light shadow">
+            <div class="card-header bg-secondary text-white">
+                <h5 class="mb-0">Order History</h5>
+            </div>
+            <div class="card-body p-0">
+                @if (!Model.OrderHistory.Any())
+                {
+                    <div class="p-3">
+                        <p class="text-white">You have no orders yet.</p>
+                    </div>
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table class="table table-striped table-dark mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                    <th>Total</th>
+                                    <th>City</th>
+                                    <th>Address</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var order in Model.OrderHistory.OrderByDescending(o => o.OrderDate))
+                                {
+                                    <tr>
+                                        <td>@order.OrderId</td>
+                                        <td>@order.OrderDate.ToShortDateString()</td>
+                                        <td>@order.OrderStatus</td>
+                                        <td>@order.TotalAmount.ToString("C")</td>
+                                        <td>@order.City</td>
+                                        <td>@order.Address</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts{
+    <partial name="_NotificationPartial" />
+
+}

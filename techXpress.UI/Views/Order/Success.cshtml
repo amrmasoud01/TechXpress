@@ -1,0 +1,200 @@
+﻿@using System.Security.Claims
+@model int
+
+@{
+    ViewData["Title"] = "Order Confirmation";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/theme.css" />
+    <style>
+        .success-badge {
+            width: 120px;
+            height: 120px;
+            background-color: rgba(250, 204, 21, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 2rem;
+            position: relative;
+            animation: pulse 2s infinite;
+        }
+
+        .success-badge i {
+            color: var(--primary-color);
+            font-size: 3.5rem;
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: var(--primary-color);
+            animation: confetti-fall 3s ease-in-out infinite;
+            z-index: -1;
+            opacity: 0.8;
+            border-radius: 2px;
+        }
+
+        .confetti:nth-child(2) {
+            left: 20%;
+            animation-delay: 0.5s;
+            width: 12px;
+            height: 12px;
+            background-color: var(--success-color);
+        }
+
+        .confetti:nth-child(3) {
+            left: 40%;
+            animation-delay: 1s;
+            width: 14px;
+            height: 8px;
+            background-color: #9333ea;
+        }
+
+        .confetti:nth-child(4) {
+            left: 60%;
+            animation-delay: 1.5s;
+            width: 8px;
+            height: 15px;
+            background-color: #3b82f6;
+        }
+
+        .confetti:nth-child(5) {
+            left: 80%;
+            animation-delay: 0.7s;
+            width: 10px;
+            height: 10px;
+            background-color: #ec4899;
+        }
+
+
+        .order-id {
+            background: linear-gradient(90deg, var(--dark-bg), var(--card-bg));
+            display: inline-block;
+            padding: 0.5rem 1.5rem;
+            border-radius: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            box-shadow: var(--shadow-md);
+            margin: 1rem 0;
+            border: 1px solid rgba(250, 204, 21, 0.3);
+        }
+
+        .feature-item {
+            margin-top: 2rem;
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .feature-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: rgba(250, 204, 21, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            flex-shrink: 0;
+        }
+
+        .feature-icon i {
+            color: var(--primary-color);
+            font-size: 1.2rem;
+        }
+
+        .feature-text {
+            flex-grow: 1;
+        }
+
+        .feature-text h5 {
+            color: var(--light-text);
+            margin-bottom: 0.25rem;
+        }
+
+        .feature-text p {
+            color: var(--secondary-text);
+            margin-bottom: 0;
+            font-size: 0.95rem;
+        }
+    </style>
+}
+
+<div class="container page-container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="content-panel text-center">
+                <div class="confetti"></div>
+                <div class="confetti"></div>
+                <div class="confetti"></div>
+                <div class="confetti"></div>
+                <div class="confetti"></div>
+
+                <div class="success-badge">
+                    <i class="bi bi-check-circle"></i>
+                </div>
+
+                <h1 class="text-primary mb-4">Order Confirmed!</h1>
+                <p class="lead text-light mb-4">Thank you for your purchase. Your order has been successfully placed and will be processed soon.</p>
+                
+                <div class="order-id">
+                    Order #@Model.ToString("D6")
+                </div>
+                
+                <p class="text-secondary mt-2">A confirmation email has been sent to your registered email address.</p>
+                
+                <div class="row justify-content-center mt-4">
+                    <div class="col-md-10">
+                        <div class="form-section">
+                            <h4 class="mb-3 text-primary">What's Next?</h4>
+                            
+                            <div class="feature-item">
+                                <div class="feature-icon">
+                                    <i class="bi bi-truck"></i>
+                                </div>
+                                <div class="feature-text text-start">
+                                    <h5>Processing & Shipping</h5>
+                                    <p>Your order will be processed and shipped within 1-2 business days. You'll receive a notification when it ships.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="feature-item">
+                                <div class="feature-icon">
+                                    <i class="bi bi-clock-history"></i>
+                                </div>
+                                <div class="feature-text text-start">
+                                    <h5>Track Your Order</h5>
+                                    <p>You can check your order status anytime in your account dashboard under "Order History".</p>
+                                </div>
+                            </div>
+                            
+                            <div class="feature-item">
+                                <div class="feature-icon">
+                                    <i class="bi bi-headset"></i>
+                                </div>
+                                <div class="feature-text text-start">
+                                    <h5>Need Help?</h5>
+                                    <p>If you have any questions about your order, please contact our customer support team.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="d-flex justify-content-center mt-4 gap-3">
+                    <a asp-controller="Home" asp-action="Index" class="btn-secondary" style="max-width: 200px;">
+                        <i class="bi bi-house"></i>
+                        Back to Home
+                    </a>
+                <a asp-controller="Account" asp-action="Profile" class="btn-primary" style="max-width: 200px;">
+                        <i class="bi bi-box-seam"></i>
+                        View My Orders
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

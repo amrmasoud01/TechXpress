@@ -1,0 +1,18 @@
+﻿<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+<script>
+    toastr.options.positionClass = 'toast-top-right'; 
+    toastr.options.closeButton = true;
+
+    @if (TempData["successNotification"] != null)
+    {
+        <text>toastr.success('@TempData["successNotification"]');</text>
+    }
+    @if (TempData["errorNotification"] != null)
+    {
+        <text>toastr.error('@TempData["errorNotification"]');</text>
+    }
+</script>

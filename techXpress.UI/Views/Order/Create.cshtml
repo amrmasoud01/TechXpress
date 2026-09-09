@@ -1,0 +1,131 @@
+﻿@using System.Security.Claims
+@model CreateOrderActionRequest
+
+@{
+    ViewData["Title"] = "Create Order";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/theme.css" />
+}
+
+<div class="container page-container">
+    <div class="page-header">
+        <h1>Create Order</h1>
+        <p>Please provide your shipping information to complete your order</p>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="content-panel">
+                <h2 class="section-title">
+                    <i class="bi bi-truck"></i>
+                    Shipping Details
+                </h2>
+
+                <form asp-action="Create" asp-controller="Order" method="post">
+                    <input asp-for="UserId" type="hidden" value="@User.FindFirst(ClaimTypes.NameIdentifier)?.Value" />
+
+                    <div class="form-section">
+                        <div class="form-section-header">
+                            <div class="section-icon">
+                                <i class="bi bi-geo-alt"></i>
+                            </div>
+                            <div class="section-subtitle">Delivery Address</div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="form-floating input-with-icon">
+                                <input asp-for="Address" class="form-control" id="address" placeholder=" " autocomplete="off" />
+                                <label asp-for="Address">Street Address</label>
+                                <span class="input-icon">
+                                    <i class="bi bi-house"></i>
+                                </span>
+                            </div>
+                            <span asp-validation-for="Address" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="form-floating input-with-icon">
+                                <input asp-for="City" class="form-control" id="city" placeholder=" " autocomplete="off" />
+                                <label asp-for="City">City</label>
+                                <span class="input-icon">
+                                    <i class="bi bi-building"></i>
+                                </span>
+                            </div>
+                            <span asp-validation-for="City" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <div class="form-section-header">
+                            <div class="section-icon">
+                                <i class="bi bi-person"></i>
+                            </div>
+                            <div class="section-subtitle">Contact Information</div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="form-floating input-with-icon">
+                                <input asp-for="RecipientPhoneNumber" class="form-control" id="phone" placeholder=" " autocomplete="off" />
+                                <label asp-for="RecipientPhoneNumber">Phone Number</label>
+                                <span class="input-icon">
+                                    <i class="bi bi-telephone"></i>
+                                </span>
+                            </div>
+                            <span asp-validation-for="RecipientPhoneNumber" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <div class="form-section-header">
+                            <div class="section-icon">
+                                <i class="bi bi-ticket-perforated"></i>
+                            </div>
+                            <div class="section-subtitle">Discount</div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="form-floating input-with-icon">
+                                <input asp-for="CouponId" class="form-control" id="coupon" placeholder=" " type="number" autocomplete="off" />
+                                <label asp-for="CouponId"></label>
+                                <span class="input-icon">
+                                    <i class="bi bi-percent"></i>
+                                </span>
+                            </div>
+                            <span asp-validation-for="CouponId" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between mt-4">
+                        <a asp-action="ViewCart" asp-controller="ShoppingCart" class="btn-secondary" style="max-width: 200px;">
+                            <i class="bi bi-arrow-left"></i>
+                            Back to Cart
+                        </a>
+                        <button type="submit" class="btn-primary" style="max-width: 200px;">
+                            <i class="bi bi-check-circle"></i>
+                            Complete Order
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        // Form validation animations
+        const formElements = document.querySelectorAll('.form-control');
+        formElements.forEach(element => {
+            element.addEventListener('focus', function() {
+                this.parentElement.classList.add('focused');
+            });
+            
+            element.addEventListener('blur', function() {
+                this.parentElement.classList.remove('focused');
+            });
+        });
+    </script>
+}

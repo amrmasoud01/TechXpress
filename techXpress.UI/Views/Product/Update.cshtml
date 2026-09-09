@@ -1,0 +1,84 @@
+﻿@using techXpress.UI.ActionRequests
+
+@model UpdateProductActionRequest
+
+@{
+    ViewData["Title"] = "Update Product";
+}
+
+<div class="container py-4">
+    <div class="card shadow-sm rounded-3">
+        <div class="card-header bg-primary text-white py-3 d-flex justify-content-between align-items-center">
+            <h4 class="mb-0">Update Product</h4>
+            <a asp-action="Index" asp-controller="Product" class="btn btn-outline-light">
+                <i class="bi bi-arrow-left"></i> Back to Products
+            </a>
+        </div>
+        <div class="card-body p-4">
+            <form asp-controller="Product" asp-action="Update" asp-route-id="@Model.Id" method="post" enctype="multipart/form-data">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Name" class="form-label">Product Name</label>
+                        <input asp-for="Name" class="form-control" placeholder="Enter product's name">
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Price" class="form-label">Price</label>
+                        <div class="input-group">
+                            <span class="input-group-text">$</span>
+                            <input asp-for="Price" class="form-control" step="0.01" placeholder="0.00">
+                        </div>
+                        <span asp-validation-for="Price" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Description" class="form-label">Description</label>
+                    <textarea asp-for="Description" class="form-control" rows="3" placeholder="Enter product description"></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="StockQuantity" class="form-label">Stock Quantity</label>
+                        <input asp-for="StockQuantity" class="form-control" placeholder="Enter stock quantity">
+                        <span asp-validation-for="StockQuantity" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="CategoryId" class="form-label">Category</label>
+                        <select asp-for="CategoryId" asp-items="@Model.CategoryList" class="form-select">
+                            <option disabled selected>Select Category</option>
+                        </select>
+                        <span asp-validation-for="CategoryId" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label">Current Image</label>
+                    <div class="card mb-3 shadow-sm rounded-3" style="max-width: 200px;">
+                        <img src="/Images/@Model.ImageUrl" class="card-img-top p-2" alt="Product Image">
+                    </div>
+
+                    <input type="hidden" asp-for="ImageUrl" />
+
+                    <label asp-for="Image" class="form-label">Upload New Image</label>
+                    <input asp-for="Image" type="file" class="form-control">
+                    <span asp-validation-for="Image" class="text-danger"></span>
+                </div>
+
+                <div class="d-flex justify-content-end gap-2">
+                    <a asp-action="Index" asp-controller="Product" class="btn btn-outline-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-save"></i> Update Product
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

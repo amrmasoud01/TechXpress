@@ -1,0 +1,65 @@
+@using techXpress.UI.VMs.Category
+@model CategoryVM
+
+@{
+    ViewData["Title"] = "Delete Category";
+}
+
+<div class="container py-4">
+    <div class="card shadow-sm rounded-3">
+        <div class="card-header bg-danger text-white py-3 d-flex justify-content-between align-items-center">
+            <h4 class="mb-0">Delete Category</h4>
+            <a asp-action="Index" asp-controller="Category" class="btn btn-outline-light">
+                <i class="bi bi-arrow-left"></i> Back to Categories
+            </a>
+        </div>
+        <div class="card-body p-4">
+            <div class="alert alert-warning">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                <strong>Warning:</strong> Are you sure you want to delete this category? This action cannot be undone.
+            </div>
+
+            <div class="mb-4">
+                <h5>Category Details</h5>
+                <hr />
+                <dl class="row">
+                    <dt class="col-sm-3">Category Name</dt>
+                    <dd class="col-sm-9">@Model.Name</dd>
+                </dl>
+            </div>
+
+            <form asp-action="Delete" asp-controller="Category" asp-route-id="@Model.CategoryId" method="post">
+                <div class="d-flex justify-content-end gap-2">
+                    <a asp-action="Index" asp-controller="Category" class="btn btn-outline-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-trash"></i> Delete Category
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            $('form').on('submit', function(e) {
+                e.preventDefault();
+                
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        this.submit();
+                    }
+                });
+            });
+        });
+    </script>
+} 

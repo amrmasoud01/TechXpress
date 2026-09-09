@@ -1,0 +1,27 @@
+﻿@model CreateRoleActionRequest
+
+@{
+    ViewData["Title"] = "CreateRole";
+}
+
+<a asp-action="Index" class="btn btn-secondary">Back to List</a>
+<h1>Create Role</h1>
+<form asp-action="Create" asp-controller="Role" method="post">
+
+    <div data-mdb-input-init class="form-outline mb-4">
+        <label asp-for="RoleName" class="form-label">Role Name</label>
+        <input asp-for="RoleName" class="form-control" />
+        <span asp-validation-for="RoleName" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary btn-block mb-4">Create</button>
+
+</form>
+
+<div asp-validation-summary="All"></div>
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+

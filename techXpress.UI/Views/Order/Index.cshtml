@@ -1,0 +1,74 @@
+﻿@{
+    ViewData["Title"] = "Order Management";
+}
+<div class="container-fluid py-4">
+    <div class="card shadow-sm rounded-3">
+        <div class="card-header bg-primary text-white py-3">
+            <div class="row align-items-center">
+                <div class="col-12 col-md-6 mb-2 mb-md-0">
+                    <h4 class="mb-0">Order Management</h4>
+                </div>
+                <div class="col-12 col-md-6 text-md-end">
+                    <a asp-action="Index" asp-controller="Home" class="btn btn-outline-light">
+                        <i class="bi bi-house"></i> Back To Home
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="card-body p-0">
+            <div class="card shadow-sm rounded-3">
+                <div class="card-header bg-light py-3">
+                    <h5 class="mb-0">Order List</h5>
+                </div>
+                <div class="card-body p-0">
+                    
+                    <div class="btn-group mb-3" role="group" aria-label="Order Status Filters">
+                        <button type="button" class="btn btn-outline-primary" onclick="filterOrders('')">All</button>
+                        <button type="button" class="btn btn-outline-primary" onclick="filterOrders('Pending')">Pending</button>
+                        <button type="button" class="btn btn-outline-primary" onclick="filterOrders('Approved')">Approved</button>
+                        <button type="button" class="btn btn-outline-primary" onclick="filterOrders('InProgress')">InProgress</button>
+                        <button type="button" class="btn btn-outline-primary" onclick="filterOrders('Shipped')">Shipped</button>
+                        <button type="button" class="btn btn-outline-primary" onclick="filterOrders('Canceled')">Canceled</button>
+                    </div>
+                    
+                    <div class="table-responsive">
+                        <table id="orderTable" class="table table-hover align-middle mb-0">
+                            <thead class="bg-light border-bottom">
+                                <tr>
+                                    <th class="fw-semibold px-3 py-3">ID</th>
+                                    <th class="fw-semibold px-3 py-3">Email</th>
+                                    <th class="fw-semibold px-3 py-3">Total Amount</th>
+                                    <th class="fw-semibold px-3 py-3">Order Date</th>
+                                    <th class="fw-semibold px-3 py-3">Status</th>
+                                    <th class="fw-semibold px-3 py-3 text-end">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<partial name="_NotificationPartial" />
+
+@section Scripts {
+    <script src="/js/orderDataTable.js"></script>
+    <script>
+        function filterOrders(status) {
+            $('#orderTable').DataTable().ajax.url('/api/orders?orderStatus=' + status).load();
+            
+            let buttons = document.querySelectorAll('.btn-group button');
+            buttons.forEach(button => {
+                button.classList.remove('active');
+                if (button.innerText === status || (status === '' && button.innerText === 'All')) {
+                    button.classList.add('active');
+                }
+            });
+
+        }
+    </script>
+}

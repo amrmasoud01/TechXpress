@@ -1,0 +1,14 @@
+﻿@using Microsoft.AspNetCore.Http
+@using techXpress.UI.Extensions.Session
+@using techXpress.UI.VMs.WishList
+
+@{
+    var wishlist = ViewContext.HttpContext.Session.Get<WishListVM>("wishlist");
+}
+
+<div class="d-flex me-2">
+    <a class="btn btn-outline-dark" asp-action="ViewWishlist" asp-controller="Wishlist">
+        <i class="bi bi-heart-fill me-1"></i>
+        Wishlist
+    </a>
+</div> 

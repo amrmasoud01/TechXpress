@@ -1,0 +1,218 @@
+﻿@using techXpress.UI.VMs.ShoppingCart
+@model ShoppingCartVM
+
+@{
+    ViewData["Title"] = "Shopping Cart";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/theme.css" />
+    <style>
+        /* Additional Shopping Cart specific styles */
+        .cart-item-count {
+            background-color: var(--primary-color);
+            color: var(--dark-bg);
+            border-radius: 50%;
+            font-size: 0.9rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            margin-left: 0.75rem;
+        }
+
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            margin-top: 1rem;
+        }
+
+        .quantity-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background-color: rgba(255, 255, 255, 0.05);
+            color: var(--light-text);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .quantity-btn:hover {
+            background-color: var(--primary-color);
+            color: var(--dark-bg);
+            border-color: var(--primary-color);
+        }
+
+        .quantity-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .quantity-input {
+            width: 60px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background-color: rgba(15, 23, 42, 0.6);
+            color: var(--light-text);
+            border-radius: 0.5rem;
+            margin: 0 0.5rem;
+            padding: 0.5rem;
+            font-weight: 600;
+        }
+
+        .quantity-input:focus {
+            border-color: var(--primary-color);
+            outline: none;
+        }
+    </style>
+}
+
+<div class="container page-container">
+    <div class="page-header">
+        <h1>Your Shopping Cart</h1>
+        <p>Review your items and proceed to checkout when you're ready</p>
+    </div>
+
+    @if (Model == null || Model.CartItems == null || !Model.CartItems.Any())
+    {
+        <div class="content-panel empty-state">
+            <div class="empty-state-icon">
+                <i class="bi bi-cart-x"></i>
+            </div>
+            <p class="empty-state-text">Your cart is currently empty</p>
+            <a asp-action="Shop" asp-controller="Home" class="btn-primary">
+                <i class="bi bi-bag"></i> Start Shopping
+            </a>
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            <!-- Cart Items -->
+            <div class="col-lg-8">
+                <div class="content-panel">
+                    <h2 class="section-title">
+                        <i class="bi bi-cart3"></i>
+                        Your Items
+                        <span class="cart-item-count">@Model.CartItems.Count()</span>
+                    </h2>
+
+                    @foreach (var item in Model.CartItems)
+                    {
+                        <div class="item-card">
+                            <div class="row align-items-center">
+                                <!-- Product Image -->
+                                <div class="col-md-3">
+                                    <div class="item-image-container">
+                                        <img src="/Images/@item.ImageUrl" alt="@item.ProductName" class="item-image" />
+                                    </div>
+                                </div>
+                                
+                                <!-- Product Details -->
+                                <div class="col-md-5">
+                                    <div class="item-details">
+                                        <h3 class="item-name">@item.ProductName</h3>
+                                        <div class="item-actions">
+                                            <button class="btn-danger" onclick="confirmRemove(@item.ProductId, '@item.ProductName')">
+                                                <i class="bi bi-trash"></i> Remove
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Quantity & Price -->
+                                <div class="col-md-4">
+                                    <div class="quantity-control">
+                                        <button type="button" class="quantity-btn minus" data-productId="@item.ProductId">
+                                            <i class="bi bi-dash"></i>
+                                        </button>
+                                        
+                                        <input type="number" class="quantity-input" value="@item.Quantity" min="1" max="99" data-productId="@item.ProductId" readonly />
+                                        
+                                        <button type="button" class="quantity-btn plus" data-productId="@item.ProductId">
+                                            <i class="bi bi-plus"></i>
+                                        </button>
+                                    </div>
+                                    
+                                    <div class="item-price" id="subTotal" data-productId="@item.ProductId">
+                                        $@item.SubTotal.ToString("F2")
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Order Summary -->
+            <div class="col-lg-4">
+                <div class="summary-card">
+                    <h2 class="summary-title">
+                        <i class="bi bi-receipt"></i>
+                        Order Summary
+                    </h2>
+                    
+                    <div class="summary-row">
+                        <span class="summary-label">Subtotal</span>
+                        <span class="summary-value">$@Model.Total.ToString("F2")</span>
+                    </div>
+                    
+                    <div class="summary-row">
+                        <span class="summary-label">Shipping</span>
+                        <span class="summary-value">FREE</span>
+                    </div>
+                    
+                    <div class="summary-row">
+                        <span class="summary-label">Taxes</span>
+                        <span class="summary-value">Calculated at checkout</span>
+                    </div>
+                    
+                    <div class="summary-row">
+                        <span class="summary-label">Total</span>
+                        <span class="summary-total" id="cart-total">$@Model.Total.ToString("F2")</span>
+                    </div>
+                    
+                    <a class="btn-primary" asp-action="Create" asp-controller="Order">
+                        <i class="bi bi-credit-card"></i>
+                        Proceed to Checkout
+                    </a>
+                    
+                    <a asp-action="Shop" asp-controller="Home" class="btn-secondary">
+                        <i class="bi bi-arrow-left"></i>
+                        Continue Shopping
+                    </a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script src="/js/cart.js"></script>
+    <partial name="_NotificationPartial" />
+    <script>
+        function confirmRemove(productId, productName) {
+            Swal.fire({
+                title: 'Remove Item?',
+                text: `Are you sure you want to remove ${productName} from your cart?`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                cancelButtonColor: '#4b5563',
+                confirmButtonText: 'Yes, remove it',
+                background: '#1e293b',
+                color: '#f8f9fa'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = `/ShoppingCart/Remove/${productId}`;
+                }
+            });
+        }
+    </script>
+}

@@ -1,0 +1,344 @@
+﻿@model LoginUserActionRequest
+
+@{
+    ViewData["Title"] = "Login";
+}
+
+<style>
+    :root {
+        --primary-color: #facc15;
+        --primary-hover: #eab308;
+        --dark-bg: #0f172a;
+        --card-bg: #1e293b;
+        --light-text: #f8f9fa;
+        --secondary-text: #94a3b8;
+        --input-bg: rgba(15, 23, 42, 0.6);
+        --border-color: rgba(255, 255, 255, 0.1);
+        --shadow-lg: 0 20px 25px rgba(0, 0, 0, 0.2);
+        --transition: all 0.3s ease;
+    }
+
+    .auth-wrapper {
+        min-height: 80vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .auth-wrapper::before {
+        content: '';
+        position: absolute;
+        width: 300px;
+        height: 300px;
+        background: rgba(250, 204, 21, 0.03);
+        border-radius: 50%;
+        top: -150px;
+        right: -150px;
+    }
+
+    .auth-wrapper::after {
+        content: '';
+        position: absolute;
+        width: 250px;
+        height: 250px;
+        background: rgba(250, 204, 21, 0.05);
+        border-radius: 50%;
+        bottom: -100px;
+        left: -100px;
+    }
+
+    .auth-container {
+        background-color: var(--dark-bg);
+        color: var(--light-text);
+        max-width: 450px;
+        width: 100%;
+        margin: 2rem auto;
+        padding: 2.5rem;
+        border-radius: 1.5rem;
+        box-shadow: var(--shadow-lg);
+        position: relative;
+        z-index: 1;
+        animation: fadeIn 0.5s ease-out;
+    }
+
+    .auth-header {
+        text-align: center;
+        margin-bottom: 2.5rem;
+    }
+
+    .auth-header h2 {
+        color: var(--primary-color);
+        font-weight: 700;
+        font-size: 2rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .auth-header p {
+        color: var(--secondary-text);
+        font-size: 1rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+        position: relative;
+    }
+
+    .form-label {
+        color: var(--light-text);
+        font-weight: 500;
+        display: block;
+        margin-bottom: 0.5rem;
+    }
+
+    .form-control {
+        background-color: var(--input-bg);
+        color: var(--light-text);
+        border: 1px solid var(--border-color);
+        border-radius: 0.75rem;
+        padding: 0.85rem 1rem;
+        width: 100%;
+        transition: var(--transition);
+    }
+
+    .form-control:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.15rem rgba(250, 204, 21, 0.15);
+        outline: none;
+    }
+
+    .form-control::placeholder {
+        color: var(--secondary-text);
+        opacity: 0.7;
+    }
+
+    .input-with-icon {
+        position: relative;
+    }
+
+    .input-icon {
+        position: absolute;
+        top: 50%;
+        right: 1rem;
+        transform: translateY(-50%);
+        color: var(--secondary-text);
+        cursor: pointer;
+        transition: var(--transition);
+    }
+
+    .input-icon:hover {
+        color: var(--primary-color);
+    }
+
+    .form-check {
+        display: flex;
+        align-items: center;
+    }
+
+    .form-check-input {
+        width: 1.25rem;
+        height: 1.25rem;
+        margin-right: 0.5rem;
+        background-color: var(--input-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 0.25rem;
+        cursor: pointer;
+    }
+
+    .form-check-input:checked {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+    }
+
+    .form-check-label {
+        color: var(--secondary-text);
+        cursor: pointer;
+    }
+
+    .auth-btn {
+        background-color: var(--primary-color);
+        color: var(--dark-bg);
+        border: none;
+        width: 100%;
+        padding: 0.85rem 1.5rem;
+        font-weight: 600;
+        font-size: 1.1rem;
+        border-radius: 0.75rem;
+        margin-top: 0.5rem;
+        cursor: pointer;
+        transition: var(--transition);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        position: relative;
+        overflow: hidden;
+        z-index: 1;
+    }
+
+    .auth-btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: 0.5s;
+        z-index: -1;
+    }
+
+    .auth-btn:hover::before {
+        left: 100%;
+    }
+
+    .auth-btn:hover {
+        background-color: var(--primary-hover);
+        transform: translateY(-3px);
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .auth-btn i {
+        margin-right: 0.5rem;
+        font-size: 1.2rem;
+    }
+
+    .auth-footer {
+        text-align: center;
+        margin-top: 2rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .auth-footer p {
+        color: var(--secondary-text);
+        margin-bottom: 0.5rem;
+    }
+
+    .auth-link {
+        color: var(--primary-color);
+        text-decoration: none;
+        font-weight: 500;
+        transition: var(--transition);
+    }
+
+    .auth-link:hover {
+        text-decoration: underline;
+        color: var(--primary-hover);
+    }
+
+    .validation-summary {
+        margin-top: 1.5rem;
+        border-radius: 0.75rem;
+        padding: 1rem;
+        background-color: rgba(239, 68, 68, 0.1);
+        border-left: 3px solid #ef4444;
+    }
+
+    .validation-summary ul {
+        margin: 0;
+        padding-left: 1.5rem;
+        list-style-type: none;
+    }
+
+    .validation-summary li {
+        margin-bottom: 0.5rem;
+        color: #ef4444;
+        display: flex;
+        align-items: center;
+    }
+
+    .validation-summary li::before {
+        content: '•';
+        color: #ef4444;
+        font-weight: bold;
+        margin-right: 0.5rem;
+    }
+
+    .validation-message {
+        color: #ef4444;
+        font-size: 0.85rem;
+        margin-top: 0.25rem;
+        display: flex;
+        align-items: center;
+    }
+
+    .validation-message i {
+        margin-right: 0.25rem;
+    }
+</style>
+
+<div class="auth-wrapper">
+    <div class="auth-container">
+        <div class="auth-header">
+            <h2>Welcome Back</h2>
+            <p>Sign in to your techXpress account</p>
+        </div>
+
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div class="validation-summary">
+                <div asp-validation-summary="All" class="text-danger">
+                </div>
+            </div>
+        }
+
+        <form asp-action="Login" asp-controller="Account" method="post">
+            <input type="hidden" value="@ViewBag.ReturnUrl" name="ReturnUrl"/>
+            <div class="form-group">
+                <label asp-for="Email" class="form-label">Email Address</label>
+                <div class="input-with-icon">
+                    <input asp-for="Email" class="form-control" placeholder="Enter your email" />
+                </div>
+                <span asp-validation-for="Email" class="validation-message">
+                </span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Password" class="form-label">Password</label>
+                <div class="input-with-icon">
+                    <input asp-for="Password" type="password" class="form-control" id="passwordField" placeholder="Enter your password" />
+                    <i class="bi bi-eye-slash input-icon" id="togglePassword"></i>
+                </div>
+                <span asp-validation-for="Password" class="validation-message">
+                </span>
+            </div>
+
+            <div class="form-group d-flex justify-content-between align-items-center">
+                <div class="form-check">
+                    <input class="form-check-input" asp-for="RememberMe" />
+                    <label class="form-check-label" asp-for="RememberMe">Remember me</label>
+                </div>
+                <a href="#" class="auth-link">Forgot Password?</a>
+            </div>
+
+            <button type="submit" class="auth-btn">
+                <i class="bi bi-box-arrow-in-right"></i>
+                Sign In
+            </button>
+
+            <div class="auth-footer">
+                <p>Don't have an account?</p>
+                <a asp-action="Register" asp-controller="Account" class="auth-link">Create an account</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const togglePassword = document.getElementById('togglePassword');
+            const passwordField = document.getElementById('passwordField');
+
+            togglePassword.addEventListener('click', function() {
+                const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordField.setAttribute('type', type);
+                this.classList.toggle('bi-eye');
+                this.classList.toggle('bi-eye-slash');
+            });
+        });
+    </script>
+}

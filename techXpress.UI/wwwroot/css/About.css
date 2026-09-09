@@ -1,0 +1,308 @@
+﻿.about-hero {
+    background-color: #212529;
+    padding: 5rem 2rem;
+    text-align: center;
+    color: #f8f9fa;
+    border-radius: 10px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    margin-bottom: 3rem;
+}
+
+    .about-hero:before {
+        content: '';
+        position: absolute;
+        width: 300px;
+        height: 300px;
+        background: rgba(250, 204, 21, 0.1);
+        border-radius: 50%;
+        top: -150px;
+        right: -100px;
+    }
+
+    .about-hero:after {
+        content: '';
+        position: absolute;
+        width: 200px;
+        height: 200px;
+        background: rgba(250, 204, 21, 0.07);
+        border-radius: 50%;
+        bottom: -100px;
+        left: -50px;
+    }
+
+    .about-hero h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        color: #facc15;
+        position: relative;
+        z-index: 2;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+    }
+
+    .about-hero p {
+        font-size: 1.2rem;
+        max-width: 800px;
+        margin: 0 auto;
+        color: #f8f9fa;
+        position: relative;
+        z-index: 2;
+    }
+
+.underline {
+    width: 50px;
+    height: 4px;
+    background-color: #facc15;
+    border-radius: 2px;
+    margin: 1rem auto 2rem;
+}
+
+.about-mission {
+    background-color: #212529;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    padding: 3rem;
+    margin-bottom: 3rem;
+}
+
+.mission-text {
+    color: #f8f9fa;
+}
+
+    .mission-text h2 {
+        color: #facc15;
+        margin-bottom: 1.5rem;
+        font-weight: 600;
+    }
+
+    .mission-text p {
+        font-size: 1.1rem;
+        line-height: 1.8;
+    }
+
+.feature-box {
+    background-color: #2c3034;
+    padding: 2rem;
+    border-radius: 1rem;
+    text-align: center;
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: 100%;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+    .feature-box:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    }
+
+.feature-icon {
+    width: 70px;
+    height: 70px;
+    background-color: rgba(250, 204, 21, 0.2);
+    color: #facc15;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+}
+
+.feature-box h4 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #f8f9fa;
+}
+
+.feature-box p {
+    font-size: 1rem;
+    color: #f8f9fa;
+}
+
+.team-section {
+    background-color: #212529;
+    padding: 3rem;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    margin-bottom: 3rem;
+}
+
+.team-heading {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+    .team-heading h2 {
+        color: #facc15;
+        font-weight: 600;
+    }
+
+.team-card {
+    background-color: #2c3034;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    height: 100%;
+}
+
+    .team-card:hover {
+        transform: translateY(-5px);
+    }
+
+.team-img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 5px solid rgba(250, 204, 21, 0.3);
+    margin: 0 auto;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.team-simple {
+    padding: 1rem;
+    transition: transform 0.3s ease;
+}
+
+    .team-simple:hover {
+        transform: translateY(-5px);
+    }
+
+.team-link {
+    text-decoration: none;
+    display: block;
+}
+
+    .team-link:hover .team-img {
+        box-shadow: 0 0 20px rgba(250, 204, 21, 0.5);
+        transform: scale(1.05);
+    }
+
+    .team-link h5 {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-top: 0.5rem;
+        color: #f8f9fa;
+        transition: color 0.3s ease;
+    }
+
+    .team-link:hover h5 {
+        color: #facc15;
+    }
+
+.team-details {
+    padding: 1.5rem;
+    text-align: center;
+}
+
+    .team-details h5 {
+        color: #f8f9fa;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+
+    .team-details .position {
+        color: #facc15;
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+    }
+
+    .team-details p {
+        color: #f8f9fa;
+        font-size: 0.95rem;
+        margin-bottom: 1.5rem;
+    }
+
+.social-links {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+    .social-links a {
+        width: 36px;
+        height: 36px;
+        background-color: rgba(250, 204, 21, 0.2);
+        color: #facc15;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+    }
+
+        .social-links a:hover {
+            background-color: #facc15;
+            color: #212529;
+        }
+
+.cta-section {
+    background-color: #2c3034;
+    padding: 3rem;
+    border-radius: 15px;
+    text-align: center;
+    margin-top: 3rem;
+}
+
+    .cta-section h2 {
+        color: #f8f9fa;
+        margin-bottom: 1.5rem;
+    }
+
+.btn-shop {
+    background-color: #facc15;
+    color: #212529;
+    font-weight: 600;
+    padding: 0.8rem 2rem;
+    border-radius: 50px;
+    border: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(250, 204, 21, 0.3);
+}
+
+    .btn-shop:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 15px rgba(250, 204, 21, 0.4);
+        background-color: #eab308;
+    }
+
+@media (max-width: 768px) {
+    .team-section {
+        padding: 1.5rem;
+    }
+    .team-img {
+        width: 80px;
+        height: 80px;
+    }
+    .team-link h5 {
+        font-size: 1rem;
+    }
+    .team-simple {
+        padding: 0.5rem;
+    }
+    .row.g-4.justify-content-center > .col-4 {
+        flex: 0 0 50%;
+        max-width: 50%;
+        margin-bottom: 1rem;
+    }
+}
+@media (max-width: 480px) {
+    .team-img {
+        width: 60px;
+        height: 60px;
+    }
+    .row.g-4.justify-content-center > .col-4 {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+}
+
+footer.bg-dark {
+    background-color: #212529 !important;
+}

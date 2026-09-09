@@ -1,0 +1,356 @@
+@model techXpress.UI.VMs.WishList.WishListVM
+
+@{
+    ViewData["Title"] = "My Wishlist";
+}
+
+<style>
+    .wishlist-header {
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        border: 1px solid #1e293b;
+        border-radius: 12px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    }
+
+    .wishlist-header::before {
+        content: '';
+        position: absolute;
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        background: rgba(250, 204, 21, 0.1);
+        top: -100px;
+        right: -50px;
+    }
+
+    .wishlist-header::after {
+        content: '';
+        position: absolute;
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        background: rgba(250, 204, 21, 0.05);
+        bottom: -50px;
+        left: -50px;
+    }
+
+    .wishlist-header h1 {
+        font-size: 1.75rem;
+        font-weight: 700;
+        letter-spacing: 1px;
+        color: #facc15;
+        position: relative;
+        z-index: 1;
+    }
+
+    .wishlist-header p {
+        font-size: 1rem;
+        color: #cbd5e1;
+        margin: 0;
+        position: relative;
+        z-index: 1;
+    }
+
+    .wishlist-item {
+        background-color: #1e293b;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+    }
+
+    .wishlist-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .wishlist-img-container {
+        height: 200px;
+        overflow: hidden;
+        background-color: rgba(255, 255, 255, 0.05);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
+    }
+
+    .wishlist-img-container img {
+        max-height: 100%;
+        object-fit: contain;
+        transition: transform 0.5s ease;
+    }
+
+    .wishlist-item:hover .wishlist-img-container img {
+        transform: scale(1.1);
+    }
+
+    .wishlist-item-info {
+        padding: 1.5rem;
+    }
+
+    .wishlist-item-title {
+        font-weight: 700;
+        color: #f8fafc;
+        font-size: 1.1rem;
+        margin-bottom: 0.5rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        height: 2.8em;
+        line-height: 1.4;
+    }
+
+    .wishlist-item-price {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #facc15;
+        margin-bottom: 0.5rem;
+    }
+
+    .wishlist-date {
+        font-size: 0.8rem;
+        color: #94a3b8;
+        margin-bottom: 1rem;
+    }
+
+    .wishlist-rating {
+        color: #facc15;
+        margin-bottom: 1rem;
+    }
+
+    .empty-wishlist {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 4rem 2rem;
+        text-align: center;
+        background-color: #1e293b;
+        border-radius: 12px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .empty-wishlist i {
+        font-size: 5rem;
+        color: rgba(250, 204, 21, 0.3);
+        margin-bottom: 1.5rem;
+    }
+
+    .empty-wishlist h3 {
+        font-weight: 700;
+        color: #f8fafc;
+        margin-bottom: 1rem;
+    }
+
+    .empty-wishlist p {
+        color: #94a3b8;
+        max-width: 500px;
+        margin-bottom: 2rem;
+    }
+
+    .shop-now-btn {
+        background-color: #facc15;
+        color: #0f172a;
+        padding: 0.75rem 2rem;
+        border-radius: 30px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        border: none;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .shop-now-btn:hover {
+        background-color: #eab308;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+        color: #0f172a;
+    }
+
+    .shop-now-btn i {
+        margin-right: 0.5rem;
+        transition: transform 0.3s ease;
+    }
+
+    .shop-now-btn:hover i {
+        transform: translateX(-3px);
+    }
+
+    .wishlist-btn {
+        border-radius: 30px;
+        font-weight: 600;
+        padding: 0.6rem 1.2rem;
+        transition: all 0.3s ease;
+        border: none;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+    .remove-btn {
+        background: rgba(255, 255, 255, 0.1);
+        color: #f8fafc;
+        margin-top: 0.5rem;
+    }
+
+    .remove-btn:hover {
+        background: rgba(239, 68, 68, 0.2);
+        color: #ef4444;
+    }
+
+    .add-to-cart-btn {
+        background: #facc15;
+        color: #0f172a;
+    }
+
+    .add-to-cart-btn:hover {
+        background: #eab308;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+        color: #0f172a;
+    }
+
+    .clear-wishlist-btn {
+        background: rgba(239, 68, 68, 0.1);
+        color: #ef4444;
+        padding: 0.6rem 1.2rem;
+        border-radius: 30px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        border: 1px solid rgba(239, 68, 68, 0.3);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        text-decoration: none;
+    }
+
+    .clear-wishlist-btn:hover {
+        background: rgba(239, 68, 68, 0.2);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        color: #ef4444;
+    }
+</style>
+
+<div class="container py-5">
+    <div class="wishlist-header text-white mb-4">
+        <div class="row align-items-center">
+            <div class="col-12 col-md-8">
+                <h1 class="fw-bold mb-2"><i class="bi bi-heart-fill me-2"></i> My Wishlist</h1>
+                <p class="mb-0 opacity-75">Store your favorite items until you're ready to purchase them.</p>
+            </div>
+            <div class="col-12 col-md-4 text-md-end mt-3 mt-md-0">
+                @if (Model.WishListItems.Any())
+                {
+                    <form asp-action="Clear" method="post">
+                        <button type="submit" class="clear-wishlist-btn">
+                            <i class="bi bi-trash me-2"></i> Clear Wishlist
+                        </button>
+                    </form>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        @if (Model.WishListItems.Any())
+        {
+            @foreach (var item in Model.WishListItems)
+            {
+                <div class="col-12 col-md-6 col-lg-3 mb-4">
+                    <div class="wishlist-item h-100">
+                        <div class="wishlist-img-container">
+                            <img src="/Images/@item.ImageUrl" alt="@item.ProductName" class="img-fluid">
+                        </div>
+                        <div class="wishlist-item-info">
+                            <h5 class="wishlist-item-title">@item.ProductName</h5>
+                            <div class="wishlist-date">
+                                <i class="bi bi-calendar-check me-1"></i> Added @item.DateAdded.ToString("MMM dd, yyyy")
+                            </div>
+                            <div class="wishlist-rating">
+                                @{
+                                    // Convert rating to stars
+                                    int fullStars = (int)Math.Floor(item.AverageRating);
+                                    bool hasHalfStar = item.AverageRating - fullStars >= 0.5;
+                                    int emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+                                }
+                                
+                                @for (int i = 0; i < fullStars; i++)
+                                {
+                                    <i class="bi bi-star-fill"></i>
+                                }
+                                
+                                @if (hasHalfStar)
+                                {
+                                    <i class="bi bi-star-half"></i>
+                                }
+                                
+                                @for (int i = 0; i < emptyStars; i++)
+                                {
+                                    <i class="bi bi-star text-secondary"></i>
+                                }
+                                
+                                @if (item.AverageRating > 0)
+                                {
+                                    <span class="ms-1 small text-secondary">(@item.AverageRating.ToString("0.0"))</span>
+                                }
+                                else
+                                {
+                                    <span class="ms-1 small text-secondary">(No ratings)</span>
+                                }
+                            </div>
+                            <p class="wishlist-item-price">$@item.Price.ToString("F2")</p>
+                            
+                            <form asp-action="AddToCart" asp-route-id="@item.ProductId" method="post">
+                                <button type="submit" class="wishlist-btn add-to-cart-btn">
+                                    <i class="bi bi-cart"></i> Add to Cart
+                                </button>
+                            </form>
+                            
+                            <a asp-action="Remove" asp-route-id="@item.ProductId" class="wishlist-btn remove-btn mt-2">
+                                <i class="bi bi-x-circle"></i> Remove
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="col-12">
+                <div class="empty-wishlist">
+                    <i class="bi bi-heart"></i>
+                    <h3>Your wishlist is empty</h3>
+                    <p>You haven't added any items to your wishlist yet. Browse our products and click the heart icon to add items to your wishlist.</p>
+                    <a asp-controller="Home" asp-action="Shop" class="shop-now-btn">
+                        <i class="bi bi-bag me-2"></i> Shop Now
+                    </a>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const items = document.querySelectorAll('.wishlist-item');
+            items.forEach((item, index) => {
+                item.style.opacity = '0';
+                item.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    item.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                    item.style.opacity = '1';
+                    item.style.transform = 'translateY(0)';
+                }, 100 * index);
+            });
+        });
+    </script>
+} 
