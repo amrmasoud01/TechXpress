@@ -1,0 +1,130 @@
+@using techXpress.UI.VMs.Products
+@model IReadOnlyCollection<ProductDetailsVM>
+
+@{
+    ViewData["Title"] = "Compare Products";
+}
+
+<div class="container py-4">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+        <div>
+            <h1 class="mb-1">Compare Products</h1>
+            <p class="text-secondary mb-0">Compare up to three products side by side.</p>
+        </div>
+        <div class="d-flex gap-2">
+            <a asp-controller="Home" asp-action="Shop" class="btn btn-primary">Add another product</a>
+            @if (Model.Count > 0)
+            {
+                <form asp-action="Clear" method="post">
+                    <button type="submit" class="btn btn-outline-danger">Clear comparison</button>
+                </form>
+            }
+        </div>
+    </div>
+
+    @if (TempData["Success"] is string success)
+    {
+        <div class="alert alert-success">@success</div>
+    }
+    @if (TempData["Info"] is string info)
+    {
+        <div class="alert alert-info">@info</div>
+    }
+    @if (TempData["Error"] is string error)
+    {
+        <div class="alert alert-danger">@error</div>
+    }
+
+    @if (Model.Count == 0)
+    {
+        <div class="card bg-dark text-light border-secondary">
+            <div class="card-body text-center py-5">
+                <i class="bi bi-arrow-left-right display-4"></i>
+                <h2 class="h4 mt-3">No products selected</h2>
+                <p class="text-secondary">Choose products from the store to start comparing.</p>
+                <a asp-controller="Home" asp-action="Shop" class="btn btn-primary">Browse products</a>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-dark table-bordered align-middle text-center">
+                <thead>
+                    <tr>
+                        <th scope="col" class="text-start">Feature</th>
+                        @foreach (ProductDetailsVM product in Model)
+                        {
+                            <th scope="col">@product.Name</th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th scope="row" class="text-start">Product</th>
+                        @foreach (ProductDetailsVM product in Model)
+                        {
+                            <td><img src="/Images/@product.ImageUrl" alt="@product.Name" class="img-fluid" style="height: 180px; object-fit: contain;" /></td>
+                        }
+                    </tr>
+                    <tr>
+                        <th scope="row" class="text-start">Price</th>
+                        @foreach (ProductDetailsVM product in Model)
+                        {
+                            <td class="fw-bold text-warning">$@product.Price.ToString("N2")</td>
+                        }
+                    </tr>
+                    <tr>
+                        <th scope="row" class="text-start">Category</th>
+                        @foreach (ProductDetailsVM product in Model)
+                        {
+                            <td>@product.CategoryName</td>
+                        }
+                    </tr>
+                    <tr>
+                        <th scope="row" class="text-start">Availability</th>
+                        @foreach (ProductDetailsVM product in Model)
+                        {
+                            <td>
+                                @if (product.StockQuantity > 0)
+                                {
+                                    <span class="text-success">In Stock (@product.StockQuantity)</span>
+                                }
+                                else
+                                {
+                                    <span class="text-danger">Out of Stock</span>
+                                }
+                            </td>
+                        }
+                    </tr>
+                    <tr>
+                        <th scope="row" class="text-start">Description</th>
+                        @foreach (ProductDetailsVM product in Model)
+                        {
+                            <td>@product.Description</td>
+                        }
+                    </tr>
+                    <tr>
+                        <th scope="row" class="text-start">Actions</th>
+                        @foreach (ProductDetailsVM product in Model)
+                        {
+                            <td>
+                                <div class="d-flex flex-column gap-2">
+                                    <a asp-controller="Home" asp-action="Details" asp-route-id="@product.Id" class="btn btn-outline-light">View details</a>
+                                    @if (product.StockQuantity > 0)
+                                    {
+                                        <a asp-controller="ShoppingCart" asp-action="Add" asp-route-id="@product.Id" class="btn btn-primary">Add to cart</a>
+                                    }
+                                    <form asp-action="Remove" method="post">
+                                        <input type="hidden" name="id" value="@product.Id" />
+                                        <button type="submit" class="btn btn-outline-danger w-100">Remove</button>
+                                    </form>
+                                </div>
+                            </td>
+                        }
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    }
+</div>

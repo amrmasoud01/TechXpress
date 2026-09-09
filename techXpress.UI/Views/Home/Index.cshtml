@@ -37,9 +37,12 @@
                                 <div class="product-img-container">
                                     <img src="/Images/@product.Image" class="img-fluid" alt="@product.Name">
                                     <div class="product-actions">
-                                        <button class="action-btn" title="Compare">
-                                            <i class="bi bi-arrow-left-right"></i>
-                                        </button>
+                                        <form asp-controller="Compare" asp-action="Add" method="post" class="d-inline">
+                                            <input type="hidden" name="id" value="@product.Id" />
+                                            <button type="submit" class="action-btn" title="Compare">
+                                                <i class="bi bi-arrow-left-right"></i>
+                                            </button>
+                                        </form>
                                         <a class="action-btn add-to-wishlist" title="Add to Wishlist" data-product-id="@product.Id">
                                             <i class="bi bi-heart"></i>
                                         </a>
@@ -195,6 +198,5 @@
         });
     </script>
 }
-
 
 

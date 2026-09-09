@@ -125,11 +125,14 @@
                         <i class="bi bi-heart"></i>
                     </a>
                     
-                    <button class="btn-secondary-action" title="Compare">
-                        <i class="bi bi-arrow-left-right"></i>
-                    </button>
+                    <form asp-controller="Compare" asp-action="Add" method="post" class="d-inline">
+                        <input type="hidden" name="id" value="@Model.Id" />
+                        <button type="submit" class="btn-secondary-action" title="Compare">
+                            <i class="bi bi-arrow-left-right"></i>
+                        </button>
+                    </form>
                     
-                    <button class="btn-secondary-action" title="Share">
+                    <button type="button" class="btn-secondary-action share-product" title="Share">
                         <i class="bi bi-share"></i>
                     </button>
                 </div>
@@ -200,12 +203,12 @@
                                     <i class="bi bi-star-fill star" data-value="@i"></i>
                                 }
                             </div>
-                            <input type="hidden" name="Rating" id="RatingInput" required />
+                            <input type="hidden" name="reviewVM.Rating" id="RatingInput" />
                         </div>
 
                         <div class="mb-3">
                             <label for="Comment" class="form-label">Your Review</label>
-                            <textarea class="form-control" id="Comment" name="Comment" rows="4" placeholder="Share your thoughts about this product..."></textarea>
+                            <textarea class="form-control" id="Comment" name="reviewVM.Comment" rows="4" placeholder="Share your thoughts about this product..."></textarea>
                         </div>
 
                         <button type="submit" class="btn-primary-action">
@@ -269,7 +272,7 @@
     </div>
 </section>
 
-@section scripts {
+@section Scripts {
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             // Star rating functionality
@@ -305,7 +308,77 @@
                     });
                 });
             });
-            
+
+            const reviewForm = document.querySelector(".review-form");
+            if (reviewForm && ratingInput) {
+                reviewForm.addEventListener("submit", function (event) {
+                    const rating = Number(ratingInput.value);
+                    if (rating < 1 || rating > 5) {
+                        event.preventDefault();
+                        Swal.fire({
+                            toast: true,
+                            position: "top-end",
+                            icon: "warning",
+                            title: "Please select a rating from 1 to 5.",
+                            showConfirmButton: false,
+                            timer: 3000,
+                            timerProgressBar: true
+                        });
+                    }
+                });
+            }
+
+            const shareButton = document.querySelector(".share-product");
+            if (shareButton) {
+                shareButton.addEventListener("click", async function () {
+                    const shareData = {
+                        title: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Name)),
+                        text: @Html.Raw(System.Text.Json.JsonSerializer.Serialize($"Check out {Model.Name} on TechXpress")),
+                        url: window.location.href
+                    };
+
+                    try {
+                        if (navigator.share) {
+                            await navigator.share(shareData);
+                            return;
+                        }
+
+                        if (navigator.clipboard && window.isSecureContext) {
+                            await navigator.clipboard.writeText(shareData.url);
+                        } else {
+                            const textArea = document.createElement("textarea");
+                            textArea.value = shareData.url;
+                            textArea.style.position = "fixed";
+                            textArea.style.opacity = "0";
+                            document.body.appendChild(textArea);
+                            textArea.select();
+                            document.execCommand("copy");
+                            textArea.remove();
+                        }
+
+                        Swal.fire({
+                            toast: true,
+                            position: "top-end",
+                            icon: "success",
+                            title: "Product link copied.",
+                            showConfirmButton: false,
+                            timer: 2500
+                        });
+                    } catch (error) {
+                        if (error.name !== "AbortError") {
+                            Swal.fire({
+                                toast: true,
+                                position: "top-end",
+                                icon: "error",
+                                title: "Unable to share this product.",
+                                showConfirmButton: false,
+                                timer: 2500
+                            });
+                        }
+                    }
+                });
+            }
+
             // Smooth scroll to reviews section when clicking on review count link
             document.querySelector('a[href="#reviews"]').addEventListener('click', function(e) {
                 e.preventDefault();
