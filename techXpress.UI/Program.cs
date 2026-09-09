@@ -38,7 +38,7 @@ namespace techXpress.UI
                 options.IdleTimeout = TimeSpan.FromDays(7); 
                 options.Cookie.HttpOnly = true;
                 options.Cookie.IsEssential = true;
-                options.Cookie.SecurePolicy = CookieSecurePolicy.Always; 
+                options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
                 options.Cookie.SameSite = SameSiteMode.Lax;
                 options.Cookie.MaxAge = TimeSpan.FromDays(7); 
             });
