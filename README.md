@@ -1,6 +1,13 @@
 # TechXpress
 
+[![Build](https://github.com/amrmasoud01/TechXpress/actions/workflows/ci.yml/badge.svg)](https://github.com/amrmasoud01/TechXpress/actions/workflows/ci.yml)
+[![.NET](https://img.shields.io/badge/.NET-9.0-512BD4?logo=dotnet&logoColor=white)](https://dotnet.microsoft.com/)
+[![ASP.NET Core](https://img.shields.io/badge/ASP.NET_Core-MVC-512BD4)](https://learn.microsoft.com/aspnet/core/mvc/)
+[![Live Demo](https://img.shields.io/badge/Live_Demo-Open-2EA44F?logo=googlechrome&logoColor=white)](https://techxpress0.runasp.net/)
+
 TechXpress is an ASP.NET Core MVC e-commerce application for browsing electronics, managing a cart and wishlist, placing Stripe Checkout orders, and administering products, categories, users, roles, and order reports.
+
+**Live demo:** [techxpress0.runasp.net](https://techxpress0.runasp.net/)
 
 ## Highlights
 
